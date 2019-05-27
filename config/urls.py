@@ -17,6 +17,6 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('linter/', include('springcm_tools.linter.urls')),
+    path('', include('springcm_tools.linter.urls')),
     path('admin/', admin.site.urls),
 ]
