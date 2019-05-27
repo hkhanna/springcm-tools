@@ -3,9 +3,11 @@ Django==2.2.1
 django-environ==0.4.5
 isort==4.3.20
 lazy-object-proxy==1.4.1
+lxml==4.3.3
 mccabe==0.6.1
 pkg-resources==0.0.0
 pylint==2.3.1
+python-docx==0.8.10
 pytz==2019.1
 six==1.12.0
 sqlparse==0.3.0
