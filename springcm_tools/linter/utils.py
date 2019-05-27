@@ -18,27 +18,27 @@ class MergeTag:
     def __init__(self, start, end, paragraph):
         self.error = None
         self.error_raw = None
-        substr = paragraph.text[start:end + 1]
+        self.directive_string = paragraph.text[start:end + 1]
 
         # Lop off the directives and strip whitespace
-        substr = substr[2:]
-        substr = substr[:-2]
-        substr = substr.strip()
+        self.tag_string = self.directive_string[2:]
+        self.tag_string = self.tag_string[:-2]
+        self.tag_string = self.tag_string.strip()
 
         # Replace Word's curly quotes with regular ones
-        substr = substr.replace(u"\u201D", "\"")
-        substr = substr.replace(u"\u201C", "\"")
-        substr = substr.replace(u"\u2019", "'")
-        substr = substr.replace(u"\u2018", "'")
+        self.tag_string = self.tag_string.replace(u"\u201D", "\"")
+        self.tag_string = self.tag_string.replace(u"\u201C", "\"")
+        self.tag_string = self.tag_string.replace(u"\u2019", "'")
+        self.tag_string = self.tag_string.replace(u"\u2018", "'")
 
         # Confirm tag is self closing />
-        if substr[-2:] != "/>":
+        if self.tag_string[-2:] != "/>":
             self.error = "Missing self-closing tag />"
             return
 
         # Parse the tag into an XML element
         try:
-            self.elem = ET.fromstring(substr)
+            self.elem = ET.fromstring(self.tag_string)
         except ET.ParseError: 
             # Catch malformed XML
             self.error = "Malformed XML"

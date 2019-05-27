@@ -1,12 +1,21 @@
 # springcm-tools
 A collection of SpringCM tools running on the web
 
-## Roadmap / Things To Do
-- [x] Check out django-environ and setup secret keys
-- [x] Setup view and form for linter
-- [x] Set up linter testing
-- [ ] Get linter to work at a basic level without any styles (including tests)
-- [ ] Deploy: make settings and requirements more two-scoopsy
-- [ ] Deploy: deployment checklist
-- [ ] Setup storage of files that are submitted
-- [ ] Install bootstrap, make it pretty
+## Installation for Development
+Installation instructions will go here. 
+(The below won't work until I set a default secret key in dev.)
+- [ ] /path/to/python3 -m venv /path/to/venv
+- [ ] source /path/to/venv/bin/activate
+- [ ] git clone
+- [ ] cd into directory
+- [ ] pip install -r requirements.txt
+- [ ] python manage.py migrate
+- [ ] python manage.py runserver
+
+## Deployment
+Deployment instructions will go here. To get there:
+- [ ] Figure out Ansible
+- [ ] Make settings and requirements more two-scoopsy
+- [ ] In development, secret key should have a default
+- [ ] Django deployment checklist
+- [ ] Check out deployment section of fullstackpython.com

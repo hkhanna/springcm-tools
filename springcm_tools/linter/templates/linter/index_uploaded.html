@@ -1,0 +1,8 @@
+{% extends 'linter/base.html' %}
+{% block body %}
+<ol>
+   {% for error in doc_errors %}
+   <li>{{ error.error }}  <strong>{{error.directive_string}}</strong></li>
+   {% endfor %}
+</ol>
+{% endblock body %}
