@@ -60,7 +60,6 @@ class MergeTag:
                 self.error = "Select attribute has invalid XPath"
                 return
 
-       # TODO Confirm well-formed XPath in Select attr (TEST)
        # TODO Each Conditional (and repeat?) tag has a EndConditional tag either (1) in the same paragraphs or (2) in their own separate paragraphs. (TEST)
 
     def extract_relaxng_validation_error(self, error_log):
@@ -106,3 +105,4 @@ def lint(document):
     # TODO Handle tables and paragraphs inside of tables
     # TODO handle header / footer
     # TODO: schema does not enforce that TrackName can't start with XML
+    # TODO: TableRow must be in the first cell of a table row
