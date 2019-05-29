@@ -14,8 +14,8 @@ Installation instructions will go here.
 
 ## Deployment
 Deployment instructions will go here. To get there:
-- [ ] Figure out Ansible
+- [x] Figure out Ansible
 - [ ] Make settings and requirements more two-scoopsy
-- [ ] In development, secret key should have a default
+- [x] In development, secret key should have a default
 - [ ] Django deployment checklist
 - [ ] Check out deployment section of fullstackpython.com
