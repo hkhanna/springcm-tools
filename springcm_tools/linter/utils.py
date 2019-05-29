@@ -60,6 +60,15 @@ class MergeTag:
                 self.error = "Select attribute has invalid XPath"
                 return
 
+        if "Test" in self.elem.attrib:
+            xpath = self.elem.attrib["Test"]
+            try:
+                ET.XPath(xpath)
+            except ET.XPathError:
+                self.error = "Test attribute must be valid XPath that returns true or false"
+                return
+
+
        # TODO Each Conditional (and repeat?) tag has a EndConditional tag either (1) in the same paragraphs or (2) in their own separate paragraphs. (TEST)
 
     def extract_relaxng_validation_error(self, error_log):
@@ -106,3 +115,4 @@ def lint(document):
     # TODO handle header / footer
     # TODO: schema does not enforce that TrackName can't start with XML
     # TODO: TableRow must be in the first cell of a table row
+    # TODO: can't evaluate whether Test XPath is True or False without a params

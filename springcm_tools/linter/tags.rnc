@@ -9,4 +9,14 @@ element TableRow {
     attribute Optional { "true"|"false" },
     attribute TagRef { text }?,
     attribute TrackName { xsd:string { pattern = "[a-zA-Z][a-zA-Z0-9 .]+" } }?
+} | 
+element Conditional {
+    (
+        (attribute Select { text }, (attribute Match { text } | attribute NotMatch { text })) | 
+        attribute Test { text }
+    ),
+    attribute TagRef { text }?
+} | 
+element EndConditional {
+    empty
 }

@@ -38,4 +38,22 @@
       </attribute>
     </optional>
   </element>
+  <element name="Conditional">
+    <choice>
+      <group>
+        <attribute name="Select"/>
+        <choice>
+          <attribute name="Match"/>
+          <attribute name="NotMatch"/>
+        </choice>
+      </group>
+      <attribute name="Test"/>
+    </choice>
+    <optional>
+      <attribute name="TagRef"/>
+    </optional>
+  </element>
+  <element name="EndConditional">
+    <empty/>
+  </element>
 </choice>

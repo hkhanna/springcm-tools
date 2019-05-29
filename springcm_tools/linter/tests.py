@@ -191,7 +191,7 @@ class ConditionalTagTests(SimpleTestCase):
 
     def test_malformed_xml(self):
         """Test malformed xml"""
-        input = '<# <Conditional Select="//Foo"Match=""> #> Hello <# <EndConditional/> #>'
+        input = '<# <Conditional Select="//Foo"Match="" /> #> Hello <# <EndConditional/> #>'
         res = lint(ms_wordify(input))
         self.assertEqual(len(res), 1)
         self.assertEqual(res[0].error, "Malformed XML")
@@ -224,8 +224,8 @@ class ConditionalTagTests(SimpleTestCase):
         input = '<# <Conditional Test="true" /> #> Hello <# <EndConditional /> #>'
         res = lint(ms_wordify(input))
         self.assertEqual(len(res), 0)
- 
-        input = '<# <Conditional Test="//Foo" /> #> Hello <# <EndConditional /> #>'
+
+        input = '<# <Conditional Test="\\badxpath" /> #> Hello <# <EndConditional /> #>'
         res = lint(ms_wordify(input))
         self.assertEqual(len(res), 1)
         self.assertEqual(res[0].error, "Test attribute must be valid XPath that returns true or false")
