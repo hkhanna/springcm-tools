@@ -2,12 +2,14 @@
 <choice xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
   <element name="Content">
     <attribute name="Select"/>
-    <attribute name="Optional">
-      <choice>
-        <value>true</value>
-        <value>false</value>
-      </choice>
-    </attribute>
+    <optional>
+      <attribute name="Optional">
+        <choice>
+          <value>true</value>
+          <value>false</value>
+        </choice>
+      </attribute>
+    </optional>
     <optional>
       <attribute name="TagRef"/>
     </optional>
@@ -21,12 +23,14 @@
   </element>
   <element name="TableRow">
     <attribute name="Select"/>
-    <attribute name="Optional">
-      <choice>
-        <value>true</value>
-        <value>false</value>
-      </choice>
-    </attribute>
+    <optional>
+      <attribute name="Optional">
+        <choice>
+          <value>true</value>
+          <value>false</value>
+        </choice>
+      </attribute>
+    </optional>
     <optional>
       <attribute name="TagRef"/>
     </optional>

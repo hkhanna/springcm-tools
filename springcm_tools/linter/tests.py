@@ -50,7 +50,7 @@ class ContentTagTests(SimpleTestCase):
 
     def test_required_attributes(self):
         """Test required attributes are present"""
-        # I think Select and Optional are required. TODO: investigate this
+        # I think only Select is required. TODO: investigate this
         input = '<# <Content Optional="true" /> #>'
         res = lint(ms_wordify(input))
         self.assertEqual(len(res), 1)
@@ -58,8 +58,7 @@ class ContentTagTests(SimpleTestCase):
 
         input = '<# <Content Select="//Foo" /> #>'
         res = lint(ms_wordify(input))
-        self.assertEqual(len(res), 1)
-        self.assertEqual(res[0].error, "Invalid attributes")
+        self.assertEqual(len(res), 0)
 
     def test_select(self):
         """Confirm the value of the Select attribute is valid XPath"""
@@ -128,7 +127,7 @@ class TableRowTagTests(SimpleTestCase):
 
     def test_required_attributes(self):
         """Test required attributes are present"""
-        # I think Select and Optional are required. TODO: investigate this
+        # I think only Select is required. TODO: investigate this
         input = '<# <TableRow Optional="true" /> #>'
         res = lint(ms_wordify(input))
         self.assertEqual(len(res), 1)
@@ -136,8 +135,7 @@ class TableRowTagTests(SimpleTestCase):
 
         input = '<# <TableRow Select="//Foo" /> #>'
         res = lint(ms_wordify(input))
-        self.assertEqual(len(res), 1)
-        self.assertEqual(res[0].error, "Invalid attributes")
+        self.assertEqual(len(res), 0)
 
     def test_select(self):
         """Confirm the value of the Select attribute is valid XPath"""
