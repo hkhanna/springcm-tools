@@ -8,11 +8,14 @@ ROOT_DIR = environ.Path(__file__) - 3 # Repo root
 APPS_DIR = ROOT_DIR.path("springcm_tools")
 
 env = environ.Env()
-# OS environment vars take precedence over variables from .env
-env.read_env(str(ROOT_DIR.path('.env')))
+
+READ_DOT_ENV_FILE = env.bool("DJANGO_READ_DOT_ENV_FILE", default=False)
+if READ_DOT_ENV_FILE:
+    # OS environment vars take precedence over variables from .env
+    env.read_env(str(ROOT_DIR.path('.env')))
 
 
-DEBUG = env.bool("DJANGO_DEBUG", False)
+DEBUG = env.bool("DJANGO_DEBUG", default=False)
 
 # Application definition
 
