@@ -12,9 +12,13 @@ Installation instructions will go here.
 - [ ] python manage.py runserver
 
 ## Deployment
-Deployment instructions will go here. To get there:
-- [x] Figure out Ansible
-- [x] Make settings and requirements more two-scoopsy
-- [x] In development, secret key should have a default
+1. Deployment currently tested on `debian/stretch`. 
+1. Make sure there's a `secrets.env` file in the prod directory. Copy over `secrets.env.example` for an example.
+2. In the prod directory, test the deployment with `vagrant up`
+3. `ansible-playbook -i vagrant site.yml`
+4. Visit `http://127.0.0.1:8080` and make sure the application is running properly.
+5. If all is good, run `ansible-playbook -i prod site.yml`
+6. Run `vagrant destroy`
+ 
 - [ ] Django deployment checklist
 - [ ] Check out deployment section of fullstackpython.com

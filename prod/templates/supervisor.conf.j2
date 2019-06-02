@@ -1,0 +1,8 @@
+[program:{{ gunicorn_procname }}]
+command={{ venv_path }}/bin/gunicorn -c {{ repo_path }}/gunicorn.conf.py -p {{gunicorn_procname}}.pid config.wsgi:application
+directory={{ repo_path }}
+user={{ user }}
+autostart=true
+stdout_logfile = {{ repo_path }}/logs/gunicorn.log
+autorestart=true
+redirect_stderr=true

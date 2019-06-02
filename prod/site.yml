@@ -1,0 +1,115 @@
+---
+- name: Deploy springcm-tools
+  hosts: vagrant
+  vars:
+    repo_name: "springcm-tools"
+    repo_url: "git@github.com:hkhanna/springcm-tools.git"
+    python_version: 3.6.8
+    venv_path: "{{ ansible_env.HOME }}/venvs/{{ repo_name }}"
+    repo_path: "{{ ansible_env.HOME }}/{{ repo_name }}"
+    user: "{{ ansible_user }}"
+    gunicorn_procname: gunicorn-springcm-tools
+    gunicorn_port: 8085
+    # We need ansible to use python3 for its work. If we use the default python2, we have to install setup tools
+    # and some other things to get modules like pip to work properly.
+    ansible_python_interpreter: /usr/bin/python3 
+  tasks:
+    - name: install basic apt packages
+      apt:
+        pkg: ['git', 'nginx', 'python3', 'python3-venv', 'supervisor']
+        update_cache: yes
+        cache_valid_time: 3600
+      become: True
+
+    ## INSTALL PYENV ##
+    # These are needed because pyenv builds the python versions from source when they are installed
+    - name: install pyenv build dependencies with apt
+      apt:
+        pkg: ['make', 'build-essential', 'libssl-dev', 'zlib1g-dev', 'libbz2-dev', 'libreadline-dev', 'libsqlite3-dev', 'wget', 'curl', 'llvm', 'libncurses5-dev', 'xz-utils', 'tk-dev', 'libxml2-dev', 'libxmlsec1-dev', 'libffi-dev', 'liblzma-dev']
+        update_cache: yes
+        cache_valid_time: 3600
+      become: True
+    - name: Install Pyenv
+      git:
+        repo: https://github.com/pyenv/pyenv.git
+        dest: "{{ ansible_env.HOME }}/.pyenv"
+    - name: Add pyenv path etc to .bashrc
+      lineinfile:
+        dest: "{{ ansible_env.HOME }}/.bashrc"
+        state: present
+        create: yes
+        line: "{{ item }}"
+      with_items:
+        - 'export PYENV_ROOT="$HOME/.pyenv"'
+        - 'export PATH="$PYENV_ROOT/bin:$PATH"'
+        - 'eval "$(pyenv init -)"'
+    - name: Install desired python version
+      shell: "{{ ansible_env.HOME }}/.pyenv/bin/pyenv install {{ python_version }}"
+      args:
+        creates: "{{ ansible_env.HOME }}/.pyenv/versions/{{ python_version }}"
+          
+    ## INSTALL SPRINGCM-TOOLS ##
+    - name: check out the git repo onto the host
+      git:
+        repo: "{{ repo_url }}"
+        dest: "{{ repo_path }}"
+        accept_hostkey: yes
+      notify: restart supervisor
+    - name: install requirements/production.txt
+      pip:
+        requirements: "{{ repo_path }}/requirements/production.txt"
+        virtualenv_command: "{{ ansible_env.HOME }}/.pyenv/versions/{{ python_version }}/bin/python -m venv"
+        virtualenv: "{{ venv_path }}"
+      notify: restart supervisor
+    - name: copy secrets
+      copy:
+        src: secrets.env
+        dest: "{{ repo_path }}/.env"
+      notify: restart supervisor
+    - name: apply migrations to create the database, collect static content
+      django_manage:
+        command: "{{ item }}"
+        app_path: "{{ repo_path }}"
+        virtualenv: "{{ venv_path }}"
+        settings: config.settings.production
+      with_items:
+        - migrate
+        - collectstatic --clear --noinput
+      notify: restart supervisor
+
+    ## SERVICE CONFIGURATION ##
+    - name: create log directories
+      file:
+          path: "{{ repo_path }}/logs/"
+          state: directory
+          mode: "0755"
+    - name: set the supervisor config file
+      template:
+        src: templates/supervisor.conf.j2
+        dest: "/etc/supervisor/conf.d/springcm-tools.conf"
+      become: True
+      notify: restart supervisor
+    - name: set the gunicorn config file
+      template:
+          src=templates/gunicorn.conf.py.j2
+          dest={{ repo_path }}/gunicorn.conf.py
+        #    - name: set the nginx config file
+        #      template:
+        #        src: templates/nginx.conf.j2
+        #        dest: "/etc/nginx/sites-available/springcm-tools.conf"   
+        #        become: True
+        #    - name: enable the nginx config file
+        #      file:
+        #        src: /etc/nginx/sites-available/springcm-tools.conf
+        #        dest: /etc/nginx/sites-enabled/springcm-tools.conf
+        #        state: link
+        #        notify: restart nginx
+  handlers:
+    - name: restart supervisor
+      supervisorctl: name={{ gunicorn_procname }} state=restarted
+      become: True
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted
+      become: True

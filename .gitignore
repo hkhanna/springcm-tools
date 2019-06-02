@@ -103,5 +103,10 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-# vscode
+# Additions
 .vscode/
+.vagrant/
+secrets.env
+logs/
+*.pid
+collectstatic/
