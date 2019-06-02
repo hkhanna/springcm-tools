@@ -1,6 +1,6 @@
 ---
 - name: Deploy springcm-tools
-  hosts: vagrant
+  hosts: web
   vars:
     repo_name: "springcm-tools"
     repo_url: "git@github.com:hkhanna/springcm-tools.git"
@@ -72,6 +72,8 @@
         app_path: "{{ repo_path }}"
         virtualenv: "{{ venv_path }}"
         settings: config.settings.production
+      environment:
+        DJANGO_READ_DOT_ENV_FILE: True
       with_items:
         - migrate
         - collectstatic --clear --noinput
@@ -93,17 +95,25 @@
       template:
           src=templates/gunicorn.conf.py.j2
           dest={{ repo_path }}/gunicorn.conf.py
-        #    - name: set the nginx config file
-        #      template:
-        #        src: templates/nginx.conf.j2
-        #        dest: "/etc/nginx/sites-available/springcm-tools.conf"   
-        #        become: True
-        #    - name: enable the nginx config file
-        #      file:
-        #        src: /etc/nginx/sites-available/springcm-tools.conf
-        #        dest: /etc/nginx/sites-enabled/springcm-tools.conf
-        #        state: link
-        #        notify: restart nginx
+    - name: remove default nginx file
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      notify: restart nginx
+      become: True
+    - name: set the nginx config file
+      template:
+        src: templates/nginx.conf.j2
+        dest: "/etc/nginx/sites-available/springcm-tools.conf"   
+      become: True
+      notify: restart nginx
+    - name: enable the nginx config file
+      file:
+        src: /etc/nginx/sites-available/springcm-tools.conf
+        dest: /etc/nginx/sites-enabled/springcm-tools.conf
+        state: link
+      become: True
+      notify: restart nginx
   handlers:
     - name: restart supervisor
       supervisorctl: name={{ gunicorn_procname }} state=restarted
