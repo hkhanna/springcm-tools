@@ -15,6 +15,7 @@ Installation instructions will go here.
 1. A vm must exist (on, e.g., DigitalOcean) that has username harry and the appropriate ssh public key installed in `/home/harry/.ssh`. 
 1. File `/etc/sudoers.d/harry` must exist with the line `harry ALL=(ALL) NOPASSWD:ALL`
 1. Eventually, all this user admin stuff should be handled by an Ansible playbook.
+1. Make sure production IP address is in `prod/springcm.khanna.cc` and that DNS for `springcm.khanna.cc` points to the correct place.
 
 
 ## Deployment - Part II
