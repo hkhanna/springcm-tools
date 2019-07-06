@@ -148,8 +148,13 @@ class Paragraph:
 
         directive_pairs = list(zip(open_directives, close_directives))
         # Check if the tag is a paragraph-level tag, i.e., nothing else in it
+        # Need to trim whitespace because it does not interfere with paragraph-level determination
+        trimmed_text = self.docx_paragraph.text.strip()
+        open_directive_trimmed = list(find_all(trimmed_text, "<#"))
+        close_directive_trimmed = list(find_all(trimmed_text, "#>"))
+
         if len(directive_pairs) != 0:
-            if directive_pairs[0][0] == 0 and directive_pairs[0][1] + 2 == len(self.docx_paragraph.text):
+            if open_directive_trimmed[0] == 0 and close_directive_trimmed[0] + 2 == len(trimmed_text):
                 self.solo_tag = True
 
         # Parse each directive into a MergeTag object

@@ -403,6 +403,15 @@ class ConditionalTagTests(SimpleTestCase):
         self.assertEqual(len(res), 1)
         self.assertEqual(res[0].error, "Unmatched paragraph-level Conditional tag")
 
+    def test_trim_spaces_on_paragraph_tags(self):
+        """Extra spaces shouldn't defeat paragraph-level type"""
+        para1 = ' <# <Conditional Select="//Foo" Match="" /> #>'
+        para2 = 'Hello'
+        para3 = ' <# <EndConditional /> #> '
+        input = '\n'.join([para1, para2, para3])
+        res = lint(ms_wordify(input))
+        self.assertEqual(len(res), 0)
+
 
 class SuppressListItemTagTests(SimpleTestCase):
     def test_pass(self):
