@@ -2,13 +2,39 @@ from django.test import SimpleTestCase
 import unittest
 
 from docx import Document
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
 from xml.etree import ElementTree as ET
 from .utils import lint
 
-def ms_wordify(input):
+TYPE_UNORDERED = "1"
+TYPE_ORDERED = "5"
+
+def create_list(paragraph, type):
+    p = paragraph._p #access to xml paragraph element
+    pPr = p.get_or_add_pPr() #access paragraph properties
+    numPr = OxmlElement('w:numPr') #create number properties element
+    numId = OxmlElement('w:numId') #create numId element - sets bullet type
+    numId.set(qn('w:val'), type) #set list type/indentation
+    numPr.append(numId) #add bullet type to number properties list
+    pPr.append(numPr) #add number properties to paragraph
+
+def ms_wordify(input, ul_paragraphs=[], ol_paragraphs=[]):
     document = Document()
     for paragraph in input.split("\n"):
         document.add_paragraph(paragraph)
+
+    for list in ul_paragraphs:
+        p = document.paragraphs[list]
+        p.style = "List Paragraph"
+        create_list(p, TYPE_UNORDERED)
+
+    for list in ol_paragraphs:
+        p = document.paragraphs[list]
+        p.style = "List Paragraph"
+        create_list(p, TYPE_ORDERED)
+
+
     return document
 
 
@@ -376,5 +402,50 @@ class ConditionalTagTests(SimpleTestCase):
         res = lint(ms_wordify(input))
         self.assertEqual(len(res), 1)
         self.assertEqual(res[0].error, "Unmatched paragraph-level Conditional tag")
+
+
+class SuppressListItemTagTests(SimpleTestCase):
+    def test_pass(self):
+        """Confirm easy case passes"""
+        input = '<# <SuppressListItem Select="//Foo" Match="" /> #> Hello'
+        res = lint(ms_wordify(input, ul_paragraphs=[0]))
+        self.assertEqual(len(res), 0)
+
+    def test_unrecognized_attributes(self):
+        """Test unrecognized attributes"""
+        input = '<# <SuppressListItem Select="//Foo" Bar="" Match="" /> #> Hello'
+        res = lint(ms_wordify(input, ul_paragraphs=[0]))
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].error, "Invalid attributes")
+
+    def test_required_attributes(self):
+        """Test required attributes are present"""
+        # I think either Select or Test are required. TODO: investigate this
+        input = '<# <SuppressListItem Match="" /> #> Hello'
+        res = lint(ms_wordify(input, ul_paragraphs=[0]))
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].error, "Invalid attributes")
+
+    def test_not_in_list(self):
+        """Test that it appears in a list item"""
+        para1 = '<# <SuppressListItem Select="//Foo" Match="" /> #> Hello'
+        para2 = 'This is no tags'
+        para3 = '<# <SuppressListItem Select="//Foo" Match="" /> #> <# <Content Select="//Foo" Optional="true" /> #>'
+        input = '\n'.join([para1, para2, para3])
+
+        res = lint(ms_wordify(input))
+        self.assertEqual(len(res), 2)
+        self.assertEqual(res[0].error, "SuppressListItem must appear in a bullet or ordered list item")
+
+        res = lint(ms_wordify(input, ul_paragraphs=[0,1,2]))
+        self.assertEqual(len(res), 0)
+
+        res = lint(ms_wordify(input, ol_paragraphs=[0,1,2]))
+        self.assertEqual(len(res), 0)
+
+        res = lint(ms_wordify(input, ol_paragraphs=[1,2]))
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].error, "SuppressListItem must appear in a bullet or ordered list item")
+
 
 

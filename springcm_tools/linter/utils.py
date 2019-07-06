@@ -78,6 +78,13 @@ class MergeTag:
                 self.error = "Test attribute must be valid XPath that returns true or false"
                 return
 
+        # SuppressListItem must appear in a list
+        if self.type == "SuppressListItem":
+            pPr = paragraph._p.get_or_add_pPr()
+            if pPr.numPr is None or pPr.numPr.numId is None:
+                self.error = "SuppressListItem must appear in a bullet or ordered list item"
+                return
+
     def extract_relaxng_validation_error(self, error_log):
         if error_log.last_error.type_name == "RELAXNG_ERR_ATTRVALID" or error_log.last_error.type_name == "RELAXNG_ERR_INVALIDATTR":
             self.error = "Invalid attributes"

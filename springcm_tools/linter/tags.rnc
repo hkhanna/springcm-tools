@@ -19,4 +19,11 @@ element Conditional {
 } | 
 element EndConditional {
     empty
+} |
+element SuppressListItem {
+    (
+        (attribute Select { text }, (attribute Match { text } | attribute NotMatch { text })) | 
+        attribute Test { text }
+    ),
+    attribute TagRef { text }?
 }

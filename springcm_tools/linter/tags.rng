@@ -60,4 +60,19 @@
   <element name="EndConditional">
     <empty/>
   </element>
+  <element name="SuppressListItem">
+    <choice>
+      <group>
+        <attribute name="Select"/>
+        <choice>
+          <attribute name="Match"/>
+          <attribute name="NotMatch"/>
+        </choice>
+      </group>
+      <attribute name="Test"/>
+    </choice>
+    <optional>
+      <attribute name="TagRef"/>
+    </optional>
+  </element>
 </choice>
