@@ -116,24 +116,30 @@ class Paragraph:
     def __init__(self, docx_paragraph, paragraph_number):
         self.docx_paragraph = docx_paragraph
         self.number = paragraph_number
+        self.error = None
         self.solo_tag = False
         self.merge_tags = None
         self.needs_link = False
 
     def process(self):
-        global LINK_TYPES
         self.merge_tags = []
 
         # Get positions of all opening and closing <# #> directives
         open_directives = list(find_all(self.docx_paragraph.text, "<#"))
         close_directives = list(find_all(self.docx_paragraph.text, "#>"))
 
-        assert len(open_directives) == len(close_directives) # TODO make sure no unmatched directives (TEST)
+        # Test for paragraph-level errors
+        # Don't parse merge tags if these are encountered.
+        if len(open_directives) != len(close_directives):
+            self.error = "Unmatched #> or <# directive"
+            return
+
+        for index in range(len(open_directives) - 1):
+            if open_directives[index + 1] < close_directives[index]:
+                self.error = "Nested #> or <# directives not allowed"
+                return
+
         directive_pairs = list(zip(open_directives, close_directives))
-        # TODO make sure no nested directives (TEST)
-
-        # TODO If there's a paragraph-level error, don't parse the merge tags.
-
         # Check if the tag is a paragraph-level tag, i.e., nothing else in it
         if len(directive_pairs) != 0:
             if directive_pairs[0][0] == 0 and directive_pairs[0][1] + 2 == len(self.docx_paragraph.text):
@@ -143,7 +149,6 @@ class Paragraph:
         # (cant easily have subclasses of MergeTag bc need to parse the tag before I know what type it is)
         for start, end in directive_pairs:
             end = end + 1 # this is because we want the position of the > character, not the # character in the #>
-            # TODO There should be exactly one XML tag between those two directives. (TEST)
             self.merge_tags.append(MergeTag(start, end, self.docx_paragraph))
 
         # If there are any tag errors, don't bother processing links.
@@ -160,7 +165,10 @@ class Paragraph:
             MergeTag.match_tags(self.merge_tags)
 
     def errors(self):
-        return [tag for tag in self.merge_tags if tag.error]
+        if self.error:
+            return [self]
+        else:
+            return [tag for tag in self.merge_tags if tag.error]
 
 def lint(document):
     blocks = []
@@ -178,8 +186,6 @@ def lint(document):
         doc_errors.extend(block.errors())
 
     return doc_errors
-    # TODO Go through each MergeTag object and collate all the errors
-    # TODO Handle paragraph-level errors
     # TODO Handle tables and paragraphs inside of tables
     # TODO handle header / footer
     # TODO: schema does not enforce that TrackName can't start with XML

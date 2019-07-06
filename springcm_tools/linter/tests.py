@@ -19,6 +19,48 @@ class LintTests(SimpleTestCase):
         self.assertEqual(len(res), 1)
         self.assertEqual(res[0].error, "Unrecognized tag type: 'BadTagType'")
 
+    def test_one_tag_per_directive_pair(self):
+        """There should be exactly one tag between directives"""
+        input = '<# <Content Select="//Foo" Optional="true" /> <Content Select="//Foo" Optional="true" /> #>'
+        res = lint(ms_wordify(input))
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].error, "Malformed XML")
+
+    def test_nothing_between_directives(self):
+        """There should not be anything other than a tag between directives"""
+        input = '<# Hello <Content Select="//Foo" Optional="true" /> #>'
+        res = lint(ms_wordify(input))
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].error, "Malformed XML")
+
+
+class ParagraphLevelTests(SimpleTestCase):
+    def test_unmatched_directives(self):
+        """Test unmatched <# or #> directives"""
+        input = '<# <Content Select="//Foo" Optional="true" />'
+        res = lint(ms_wordify(input))
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].error, "Unmatched #> or <# directive")
+
+        input = '<Content Select="//Foo" Optional="true" /> #>'
+        res = lint(ms_wordify(input))
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].error, "Unmatched #> or <# directive")
+
+    def test_nested_directives(self):
+        """Test nested <# <# #> #> directives"""
+        input = '<# <# <Content Select="//Foo" Optional="true" /> #> #>'
+        res = lint(ms_wordify(input))
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].error, "Nested #> or <# directives not allowed")
+
+    def test_dont_parse_mergetags_if_paragraph_level_error(self):
+        """Test that merge tags are not parsed if there's a paragraph-level error"""
+        input = '<# <# <Content Select="//Foo"Optional="true" /> #> #>'
+        res = lint(ms_wordify(input))
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].error, "Nested #> or <# directives not allowed")
+
 
 class ContentTagTests(SimpleTestCase):
     def test_pass(self):
