@@ -186,9 +186,3 @@ def lint(document):
         doc_errors.extend(block.errors())
 
     return doc_errors
-    # TODO Handle tables and paragraphs inside of tables
-    # TODO handle header / footer
-    # TODO: schema does not enforce that TrackName can't start with XML
-    # TODO: TableRow must be in the first cell of a table row
-    # TODO: can't evaluate whether Test XPath is True or False without a params
-    # TODO: Test whether spaces or weird formatting affect paragraph-level conditionals (i.e., does an extra space defeat it's "standing alone")
