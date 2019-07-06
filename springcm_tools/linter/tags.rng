@@ -75,4 +75,19 @@
       <attribute name="TagRef"/>
     </optional>
   </element>
+  <element name="SuppressParagraph">
+    <choice>
+      <group>
+        <attribute name="Select"/>
+        <choice>
+          <attribute name="Match"/>
+          <attribute name="NotMatch"/>
+        </choice>
+      </group>
+      <attribute name="Test"/>
+    </choice>
+    <optional>
+      <attribute name="TagRef"/>
+    </optional>
+  </element>
 </choice>

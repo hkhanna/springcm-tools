@@ -447,5 +447,26 @@ class SuppressListItemTagTests(SimpleTestCase):
         self.assertEqual(len(res), 1)
         self.assertEqual(res[0].error, "SuppressListItem must appear in a bullet or ordered list item")
 
+class SuppressParagraphTagTests(SimpleTestCase):
+    def test_pass(self):
+        """Confirm easy case passes"""
+        input = '<# <SuppressParagraph Select="//Foo" Match="" /> #> Hello'
+        res = lint(ms_wordify(input))
+        self.assertEqual(len(res), 0)
+
+    def test_unrecognized_attributes(self):
+        """Test unrecognized attributes"""
+        input = '<# <SuppressParagraph Select="//Foo" Bar="" Match="" /> #> Hello'
+        res = lint(ms_wordify(input))
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].error, "Invalid attributes")
+
+    def test_required_attributes(self):
+        """Test required attributes are present"""
+        # I think either Select or Test are required. TODO: investigate this
+        input = '<# <SuppressParagraph Match="" /> #> Hello'
+        res = lint(ms_wordify(input))
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].error, "Invalid attributes")
 
 

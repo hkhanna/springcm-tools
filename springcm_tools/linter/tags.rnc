@@ -26,4 +26,11 @@ element SuppressListItem {
         attribute Test { text }
     ),
     attribute TagRef { text }?
+} |
+element SuppressParagraph {
+    (
+        (attribute Select { text }, (attribute Match { text } | attribute NotMatch { text })) | 
+        attribute Test { text }
+    ),
+    attribute TagRef { text }?
 }
