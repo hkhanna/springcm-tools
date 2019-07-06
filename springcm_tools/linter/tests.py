@@ -1,4 +1,5 @@
 from django.test import SimpleTestCase
+import unittest
 
 from docx import Document
 from xml.etree import ElementTree as ET
@@ -257,22 +258,22 @@ class ConditionalTagTests(SimpleTestCase):
     def test_unmatched_conditional_inline(self):
         """Inline Conditional must have matching inline EndConditional and vice-versa"""
         # No matching EndConditional
-        input = '<# <Conditional Select="//Foo" Match="" /> #> Hello'
+        input = '<# <Conditional Select="//Foo" Match="" /> #> Hello <# <Content Select="//Foo" Optional="true" /> #>'
         res = lint(ms_wordify(input))
         self.assertEqual(len(res), 1)
-        self.assertEqual(res[0].error, "Unmatched inline Conditional or EndConditional tag")
+        self.assertEqual(res[0].error, "Unmatched inline Conditional tag")
 
         # Extra EndConditional
         input = '<# <Conditional Select="//Foo" Match="" /> #> Hello <# <EndConditional /> #> Hello again <# <EndConditional /> #>'
         res = lint(ms_wordify(input))
         self.assertEqual(len(res), 1)
-        self.assertEqual(res[0].error, "Unmatched inline Conditional or EndConditional tag")
+        self.assertEqual(res[0].error, "Unmatched inline EndConditional tag")
 
-        # Solo EndConditional
-        input = 'Hello again <# <EndConditional #>'
+        # Solo EndConditional (also should be on line by itself)
+        input = 'Hello again <# <EndConditional /> #>'
         res = lint(ms_wordify(input))
         self.assertEqual(len(res), 1)
-        self.assertEqual(res[0].error, "Unmatched inline Conditional or EndConditional tag")
+        self.assertEqual(res[0].error, "Unmatched inline EndConditional tag")
 
     def test_unmatched_conditional_paragraph(self):
         """Paragraph-level Conditional must have matching paragraph EndConditional and vice-versa"""
@@ -290,7 +291,7 @@ class ConditionalTagTests(SimpleTestCase):
         input = '\n'.join([para1, para2])
         res = lint(ms_wordify(input))
         self.assertEqual(len(res), 1)
-        self.assertEqual(res[0].error, "Unmatched paragraph-level Conditional or EndConditional tag")
+        self.assertEqual(res[0].error, "Unmatched paragraph-level Conditional tag")
 
         # Missing Conditional
         para1 = 'Hello <# <Content Select="//Foo" /> #> Hello again'
@@ -298,7 +299,7 @@ class ConditionalTagTests(SimpleTestCase):
         input = '\n'.join([para1, para2])
         res = lint(ms_wordify(input))
         self.assertEqual(len(res), 1)
-        self.assertEqual(res[0].error, "Unmatched paragraph-level Conditional or EndConditional tag")
+        self.assertEqual(res[0].error, "Unmatched paragraph-level EndConditional tag")
 
         # Bad EndConditional Position
         para1 = '<# <Conditional Select="//Foo" Match="" /> #>'
@@ -306,8 +307,8 @@ class ConditionalTagTests(SimpleTestCase):
         input = '\n'.join([para1, para2])
         res = lint(ms_wordify(input))
         self.assertEqual(len(res), 2)
-        self.assertEqual(res[0].error, "Unmatched inline Conditional or EndConditional tag")
-        self.assertEqual(res[1].error, "Unmatched paragraph-level Conditional or EndConditional tag")
+        self.assertEqual(res[0].error, "Unmatched paragraph-level Conditional tag")
+        self.assertEqual(res[1].error, "Unmatched inline EndConditional tag")
 
         # Bad Conditional Position
         para1 = '<# <Conditional Select="//Foo" Match="" /> #> Hello <# <Content Select="//Foo" /> #>'
@@ -315,23 +316,23 @@ class ConditionalTagTests(SimpleTestCase):
         input = '\n'.join([para1, para2])
         res = lint(ms_wordify(input))
         self.assertEqual(len(res), 2)
-        self.assertEqual(res[0].error, "Unmatched inline Conditional or EndConditional tag")
-        self.assertEqual(res[1].error, "Unmatched paragraph-level Conditional or EndConditional tag")
+        self.assertEqual(res[0].error, "Unmatched inline Conditional tag")
+        self.assertEqual(res[1].error, "Unmatched paragraph-level EndConditional tag")
 
     def test_unmatched_conditional_complex(self):
         """Mixing and matching Conditional and EndConditional tags at various positions should work properly"""
         para1 = '<# <Conditional Select="//Foo" Match="" /> #>'
-        para2 = 'Hello <# <Content Select="//Foo" /> #> <# Conditional Select="//Foo" Match="" /> Hello again <# </EndConditional> #>'
+        para2 = 'Hello <# <Content Select="//Foo" /> #> <# <Conditional Select="//Foo" Match="sup" /> #> Hello again <# <EndConditional /> #>'
         para3 = '<# <EndConditional /> #>'
         input = '\n'.join([para1, para2, para3])
         res = lint(ms_wordify(input))
         self.assertEqual(len(res), 0)
 
         para1 = '<# <Conditional Select="//Foo" Match="" /> #>'
-        para2 = 'Hello <# <Content Select="//Foo" /> #> <# Conditional Select="//Foo" Match="" /> Hello again <# </EndConditional> #>'
+        para2 = 'Hello <# <Content Select="//Foo" /> #> <# <Conditional Select="//Foo" Match="sup" /> #> Hello again <# <EndConditional /> #>'
         input = '\n'.join([para1, para2])
         res = lint(ms_wordify(input))
         self.assertEqual(len(res), 1)
-        self.assertEqual(res[1].error, "Unmatched paragraph-level Conditional or EndConditional tag")
+        self.assertEqual(res[0].error, "Unmatched paragraph-level Conditional tag")
 
 
