@@ -1,8 +1,42 @@
 {% extends 'linter/base.html' %}
 {% block body %}
-    <form enctype="multipart/form-data" action = "{% url 'linter:index' %}" method="POST">
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="Check">
-    </form>
+<div class="row">
+    <div class="col-lg-8 mb-1 mb-lg-0">
+        <div class="card">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Check Your Template</h5>
+            </div>
+            <div class="card-body overflow-hidden p-lg-5">
+                <div class="row align-items-center justify-content-between">
+                    <form enctype="multipart/form-data" action="{% url 'linter:index' %}" method="POST">
+                        {% csrf_token %}
+                        {{ form }}
+                        <input type="submit" value="Check">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Important Tips</h5>
+            </div>
+            <div class="card-body overflow-hidden fs--1">
+                <p class="ml-3" style="text-indent: -1.2em"><span class="fas fa-long-arrow-alt-right"></span> This only
+                    works on SpringCM templates that use XML merge tags. Don't try to use this with old content
+                    control-style tags!</p>
+                <hr class="border-bottom-0 border-dashed">
+                <p class="ml-3" style="text-indent: -1.2em"><span class="fas fa-long-arrow-alt-right"></span> This is a
+                    work in progress, so some tags have not been implemented yet.</p>
+                <hr class="border-bottom-0 border-dashed">
+                <p class="ml-3" style="text-indent: -1.2em"><span class="fas fa-long-arrow-alt-right"></span> This does
+                    not yet parse tables or headers or footers.</p>
+                <hr class="border-bottom-0 border-dashed">
+                <p class="ml-3" style="text-indent: -1.2em"><span class="fas fa-long-arrow-alt-right"></span> If you
+                    want a feature implemented, just email me!</p>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock body %}
