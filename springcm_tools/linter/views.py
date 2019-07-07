@@ -29,4 +29,5 @@ def index_uploaded(request):
 
     document = Document(uploaded_file)
     doc_errors = lint(document)
-    return render(request, 'linter/index_uploaded.html', { 'doc_errors': doc_errors })
+    num_errors = len(doc_errors)
+    return render(request, 'linter/index_uploaded.html', { 'doc_errors': doc_errors, 'num_errors': num_errors, 'orig_filename': uploaded_file.name })
