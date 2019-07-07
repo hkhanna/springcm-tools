@@ -110,3 +110,4 @@ secrets.env
 logs/
 *.pid
 staticfiles/*
+uploads/*.docx

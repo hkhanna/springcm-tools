@@ -12,7 +12,8 @@ class UploadFileForm(forms.Form):
         self.helper.form_method = 'POST'
         self.helper.form_action = 'linter:index'
         self.helper.layout = Layout(
-            Field('file', template="linter/custom_filefield.html"),
+            Field('file'),
+            HTML('<hr />'),
             Field('terms', template="linter/custom_checkbox.html"),
             HTML('<button type="submit" class="btn btn-primary"><span class="fas fa-compress"></span> Check Template for Errors</button>')
         )
