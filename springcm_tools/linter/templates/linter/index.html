@@ -1,20 +1,15 @@
 {% extends 'linter/base.html' %}
+{% load crispy_forms_tags %}
 {% block body %}
 <div class="row">
     <div class="col-lg-8 mb-1 mb-lg-0">
-        <div class="card">
+        <div class="card center">
             <div class="card-header bg-light d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Check Your Template</h5>
             </div>
-            <div class="card-body overflow-hidden p-lg-5">
-                <div class="row align-items-center justify-content-between">
-                    <form enctype="multipart/form-data" action="{% url 'linter:index' %}" method="POST">
-                        {% csrf_token %}
-                        {{ form }}
-                        <input type="submit" value="Check">
-                    </form>
-                </div>
-            </div>
+            <div class="card-body p-lg-3">
+                {% crispy form %}
+           </div>
         </div>
     </div>
     <div class="col-lg-4">
