@@ -4,15 +4,25 @@
    <div class="col-lg-8 mb-1 mb-lg-0">
       <div class="card center">
          <div class="card-header bg-light d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Results - {{ orig_filename }}</h5>
+            <h5 class="mb-0">{{ orig_filename }}</h5>
          </div>
          <div class="card-body p-lg-3">
-            <p>Number of Errors: {{ num_errors }}</p>
+            <h5 class="mb-3">Total Number of Errors: <span class="badge {% if num_errors %}badge-danger{% else %}badge-success{% endif %}"">{{ num_errors }}</span></h5>
+            {% if num_errors %}
+            <div><a class="btn btn-falcon-primary" href="#">Download Template Showing Errors</a></div>
+            <hr class="border-bottom-0 border-dashed">
+            <h5>List of Errors</h5>
             <ol>
                {% for error in doc_errors %}
-               <li>{{ error.error }} <strong>{{error.directive_string}}</strong></li>
+               <li>{{ error.error }}: <code>{{error.directive_string}}</code></li>
                {% endfor %}
             </ol>
+            {% else %}
+            <p><span class="far fa-check-circle text-success"></span> Nice job! No errors to display.</p>
+            {% endif %}
+            <div>
+            <a href="{% url 'linter:index' %}">Start Over</a>
+            </div>
          </div>
       </div>
    </div>

@@ -3,7 +3,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import HTML, Layout, Div, Field
 
 class UploadFileForm(forms.Form):
-    file = forms.FileField(label="Upload SpringCM Template (.docx)")
+    file = forms.FileField(label="Upload SpringCM Template (.docx) - Max. 2MB")
     terms = forms.BooleanField(label="I acknowledge this was built for fun so there are NO WARRANTIES. I'm using this at my own risk.")
 
     def __init__(self, *args, **kwargs):
