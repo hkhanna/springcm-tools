@@ -109,4 +109,4 @@ venv.bak/
 secrets.env
 logs/
 *.pid
-static/*
+staticfiles/*

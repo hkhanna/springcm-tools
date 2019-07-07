@@ -4,6 +4,7 @@ from crispy_forms.layout import HTML, Layout, Div, Field
 
 class UploadFileForm(forms.Form):
     file = forms.FileField(label="Upload SpringCM Template (.docx)")
+    terms = forms.BooleanField(label="I acknowledge this was built for fun so there are NO WARRANTIES. I'm using this at my own risk.")
 
     def __init__(self, *args, **kwargs):
         super(UploadFileForm, self).__init__(*args, **kwargs)
@@ -12,5 +13,6 @@ class UploadFileForm(forms.Form):
         self.helper.form_action = 'linter:index'
         self.helper.layout = Layout(
             Div('file'),
-            HTML('<hr /><button type="submit" class="btn btn-primary"><span class="fas fa-compress"></span> Check for Errors</button>')
+            Field('terms'),
+            HTML('<hr /><button type="submit" class="btn btn-primary"><span class="fas fa-compress"></span> Check Template for Errors</button>')
         )
