@@ -1,8 +1,35 @@
 {% extends 'linter/base.html' %}
 {% block body %}
-<ol>
-   {% for error in doc_errors %}
-   <li>{{ error.error }}  <strong>{{error.directive_string}}</strong></li>
-   {% endfor %}
-</ol>
+<div class="row">
+   <div class="col-lg-8 mb-1 mb-lg-0">
+      <div class="card center">
+         <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Results</h5>
+         </div>
+         <div class="card-body p-lg-3">
+            <ol>
+               {% for error in doc_errors %}
+               <li>{{ error.error }} <strong>{{error.directive_string}}</strong></li>
+               {% endfor %}
+            </ol>
+         </div>
+      </div>
+   </div>
+   <div class="col-lg-4">
+      <div class="card">
+         <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Tags Not Yet Implemented</h5>
+         </div>
+         <div class="card-body overflow-hidden fs--1">
+            <p class="ml-3" style="text-indent: -1.2em"><span class="fas fa-window-close"></span> Repeat / EndRepeat</p>
+            <p class="ml-3" style="text-indent: -1.2em"><span class="fas fa-window-close"></span> HTML</p>
+            <p class="ml-3" style="text-indent: -1.2em"><span class="fas fa-window-close"></span> RichText</p>
+            <p class="ml-3" style="text-indent: -1.2em"><span class="fas fa-window-close"></span> SupressTableRow</p>
+            <p class="ml-3" style="text-indent: -1.2em"><span class="fas fa-window-close"></span> TableRow</p>
+            <p class="ml-3" style="text-indent: -1.2em"><span class="fas fa-window-close"></span> This does not yet parse tables, headers or footers.</p>
+        </div>
+      </div>
+   </div>
+</div>
+
 {% endblock body %}

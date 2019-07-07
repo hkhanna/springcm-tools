@@ -109,5 +109,5 @@ venv.bak/
 secrets.env
 logs/
 *.pid
-staticfiles/*
+static/*
 uploads/*.docx
