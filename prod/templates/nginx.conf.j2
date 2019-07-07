@@ -22,7 +22,7 @@ server {
 
     # url for static files
     location /static/ {
-        root {{ repo_path }}/static;
+        root {{ repo_path }};
         access_log off;
         log_not_found off;
     }
