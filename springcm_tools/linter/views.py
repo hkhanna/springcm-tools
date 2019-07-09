@@ -27,7 +27,14 @@ def index_uploaded(request):
         for chunk in uploaded_file.chunks():
             f.write(chunk)
 
-    document = Document(uploaded_file)
+    if uploaded_file.name[-5:] != '.docx':
+        return render(request, 'linter/bad_upload.html')
+
+    try:
+        document = Document(uploaded_file)
+    except Exception:
+        return render(request, 'linter/bad_upload.html')
+
     doc_errors = lint(document)
     num_errors = len(doc_errors)
 

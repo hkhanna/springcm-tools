@@ -15,5 +15,5 @@ class UploadFileForm(forms.Form):
             Field('file'),
             HTML('<hr />'),
             Field('terms', template="linter/custom_checkbox.html"),
-            HTML('<button type="submit" class="btn btn-primary"><span class="fas fa-compress"></span> Check Template for Errors</button>')
+            HTML('<button type="submit" class="btn btn-primary"><span class="far fa-eye"></span> Check Template for Errors</button>')
         )
