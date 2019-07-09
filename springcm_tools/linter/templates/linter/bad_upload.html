@@ -9,6 +9,9 @@
             </div>
             <div class="card-body p-lg-3">
                <p>You uploaded something that isn't a valid Word file.</p><p>Please make sure it is saved as a <code>docx</code> file and that it has the <code>.docx</code> extension.</p>
+            <div>
+               <a class="btn btn-falcon-info btn-sm" href="{% url 'linter:index' %}">Try Again</a>
+            </div>
            </div>
         </div>
     </div>
