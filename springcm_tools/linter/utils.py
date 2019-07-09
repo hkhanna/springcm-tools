@@ -122,7 +122,7 @@ class MergeTag:
 class Paragraph:
     def __init__(self, docx_paragraph, paragraph_number):
         self.docx_paragraph = docx_paragraph
-        self.number = paragraph_number
+        self.paragraph_number = paragraph_number
         self.error = None
         self.solo_tag = False
         self.merge_tags = None
@@ -178,9 +178,9 @@ class Paragraph:
 
     def errors(self):
         if self.error:
-            return [self]
+            return [(self.paragraph_number, self)]
         else:
-            return [tag for tag in self.merge_tags if tag.error]
+            return [(self.paragraph_number, tag) for tag in self.merge_tags if tag.error]
 
 def lint(document):
     blocks = []

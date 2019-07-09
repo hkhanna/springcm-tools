@@ -2,27 +2,38 @@
 {% block body %}
 <div class="row">
    <div class="col-lg-8 mb-1 mb-lg-0">
-      <div class="card center">
+      <div class="card center mb-2">
          <div class="card-header bg-light d-flex justify-content-between align-items-center">
             <h5 class="mb-0">{{ orig_filename }}</h5>
          </div>
          <div class="card-body p-lg-3">
-            <h5 class="mb-3">Total Number of Errors: <span class="badge {% if num_errors %}badge-danger{% else %}badge-success{% endif %}"">{{ num_errors }}</span></h5>
+            <h5 class="mb-3">Total Number of Errors: <span
+                  class="badge {% if num_errors %}badge-danger{% else %}badge-success{% endif %}"">{{ num_errors }}</span></h5>
             {% if num_errors %}
-            <div><a class="btn btn-falcon-primary" href="#">Download Template Showing Errors</a></div>
-            <hr class="border-bottom-0 border-dashed">
-            <h5>List of Errors</h5>
-            <ol>
+            <div>
+               <a class="btn btn-falcon-info btn-sm" href="{% url 'linter:index' %}">Try Again</a>
+            </div>
+        </div>
+      </div>
+      <div class="card center">
+         <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">List of Errors</h5>
+         </div>
+         <div class="card-body p-lg-3">
+               <ul class="fa-ul">
                {% for error in doc_errors %}
-               <li>{{ error.error }}: <code>{{error.directive_string}}</code></li>
+               <li><span class="fa-li"><i class="fas fa-times-circle text-danger"></i></span><span class="badge badge-soft-danger">Paragraph #{{error.0}}: {{error.1.error}}</span>
+                  <blockquote><code class="fs--1">{{error.1.directive_string}}</code></blockquote>
+               </li>
+               <hr class="border-bottom-0 border-dashed">
                {% endfor %}
-            </ol>
+            </ul>
             {% else %}
             <p><span class="far fa-check-circle text-success"></span> Nice job! No errors to display.</p>
-            {% endif %}
             <div>
-            <a href="{% url 'linter:index' %}">Start Over</a>
+               <a class="btn btn-falcon-info btn-sm" href="{% url 'linter:index' %}">Try Again</a>
             </div>
+             {% endif %}
          </div>
       </div>
    </div>
@@ -37,8 +48,10 @@
             <p class="ml-3" style="text-indent: -1.2em"><span class="fas fa-window-close"></span> RichText</p>
             <p class="ml-3" style="text-indent: -1.2em"><span class="fas fa-window-close"></span> SupressTableRow</p>
             <p class="ml-3" style="text-indent: -1.2em"><span class="fas fa-window-close"></span> TableRow</p>
-            <p class="ml-3" style="text-indent: -1.2em"><span class="fas fa-window-close"></span> This does not yet parse tables, headers or footers.</p>
-        </div>
+            <p class="ml-3" style="text-indent: -1.2em"><span class="fas fa-window-close"></span> This does not yet
+               parse
+               tables, headers or footers.</p>
+         </div>
       </div>
    </div>
 </div>
