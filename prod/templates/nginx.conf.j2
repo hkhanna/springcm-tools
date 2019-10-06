@@ -1,10 +1,3 @@
-{% if not enable_default_server %}
-# If no host match, close the connection to prevent host spoofing
-server {
-    listen 80 default_server;
-    return 444;
-}
-{% endif %}
 server {
     {% if enable_default_server %}
     listen 80 default_server;

@@ -95,12 +95,6 @@
       template:
           src=templates/gunicorn.conf.py.j2
           dest={{ repo_path }}/gunicorn.conf.py
-    - name: remove default nginx file
-      file:
-        path: /etc/nginx/sites-enabled/default
-        state: absent
-      notify: restart nginx
-      become: True
     - name: set the nginx config file
       template:
         src: templates/nginx.conf.j2
